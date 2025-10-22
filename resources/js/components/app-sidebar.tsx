@@ -12,32 +12,56 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
 import AppLogo from './app-logo';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-];
-
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
-];
-
 export function AppSidebar() {
+    const { auth } = usePage().props as any;
+    const userType = auth?.user?.usertype ?? 'user';
+
+    // Tentukan navigasi utama sesuai role
+    let mainNavItems: NavItem[] = [];
+
+    if (userType === 'admin') {
+        mainNavItems = [
+            {
+                title: 'Dashboard Admin',
+                href: '/admin/dashboard',
+                icon: LayoutGrid,
+            },
+        ];
+    } else if (userType === 'owner') {
+        mainNavItems = [
+            {
+                title: 'Dashboard Owner',
+                href: '/owner/dashboard',
+                icon: LayoutGrid,
+            },
+        ];
+    } else {
+        mainNavItems = [
+            {
+                title: 'Dashboard',
+                href: dashboard(),
+                icon: LayoutGrid,
+            },
+        ];
+    }
+
+    const footerNavItems: NavItem[] = [
+        {
+            title: 'Repository',
+            href: 'https://github.com/laravel/react-starter-kit',
+            icon: Folder,
+        },
+        {
+            title: 'Documentation',
+            href: 'https://laravel.com/docs/starter-kits#react',
+            icon: BookOpen,
+        },
+    ];
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
