@@ -13,14 +13,28 @@ interface User {
     id: number;
     name: string;
     email: string;
-    usertype: string;
+    usertype: 'admin' | 'owner' | 'user';
     created_at: string;
+}
+
+interface PaginationLink {
+    url: string | null;
+    label: string;
+    active: boolean;
+}
+
+interface PaginationMeta {
+    current_page: number;
+    last_page: number;
+    from: number;
+    to: number;
+    total: number;
 }
 
 interface Pagination<T> {
     data: T[];
-    links?: any[];
-    meta?: any;
+    links?: PaginationLink[];
+    meta?: PaginationMeta;
 }
 
 interface Props {
@@ -31,18 +45,16 @@ interface Props {
 }
 
 export default function UsersIndex({ users, filters }: Props) {
-    const [search, setSearch] = useState(filters.search || '');
+    const [search, setSearch] = useState(filters.search ?? '');
 
-    const handleSearch = (e: React.FormEvent) => {
+    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         router.get('/admin/users', { search }, { preserveState: true });
     };
 
-    // Handle jika data dari paginate (users.data) atau array biasa (users)
-    const userList = Array.isArray(users) ? users : users.data ?? [];
+    const userList: User[] = Array.isArray(users) ? users : users.data ?? [];
 
-    // Fungsi update role
-    const handleRoleChange = (id: number, newRole: string) => {
+    const handleRoleChange = (id: number, newRole: User['usertype']) => {
         router.post(
             `/admin/users/${id}/role`,
             { usertype: newRole },
@@ -86,7 +98,7 @@ export default function UsersIndex({ users, filters }: Props) {
                     </form>
                 </div>
 
-                {/* Table Section */}
+                {/* Table */}
                 <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
                     <table className="w-full border-collapse text-sm">
                         <thead className="bg-muted/40 border-b border-border text-left">
@@ -118,7 +130,7 @@ export default function UsersIndex({ users, filters }: Props) {
                                             <select
                                                 value={user.usertype}
                                                 onChange={(e) =>
-                                                    handleRoleChange(user.id, e.target.value)
+                                                    handleRoleChange(user.id, e.target.value as User['usertype'])
                                                 }
                                                 className="rounded-md border border-border bg-background px-3 py-1.5 text-sm focus:ring-primary focus:outline-none"
                                             >
@@ -146,7 +158,7 @@ export default function UsersIndex({ users, filters }: Props) {
                     </table>
                 </div>
 
-                {/* Pagination (optional) */}
+                {/* Pagination */}
                 {!Array.isArray(users) && users.links && (
                     <div className="flex justify-center mt-4">
                         <div className="flex items-center gap-2 text-sm">
