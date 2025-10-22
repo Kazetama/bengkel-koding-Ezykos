@@ -30,6 +30,11 @@ export function AppSidebar() {
                 href: '/admin/dashboard',
                 icon: LayoutGrid,
             },
+            {
+                title: 'Manage Users',
+                href: '/admin/users',
+                icon: Folder,
+            },
         ];
     } else if (userType === 'owner') {
         mainNavItems = [
