@@ -13,7 +13,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
+import { BookOpen, Folder, Home, LayoutGrid } from 'lucide-react';
 import AppLogo from './app-logo';
 
 export function AppSidebar() {
@@ -42,6 +42,11 @@ export function AppSidebar() {
                 title: 'Dashboard Owner',
                 href: '/owner/dashboard',
                 icon: LayoutGrid,
+            },
+            {
+                title: 'Data Kos',
+                href: '/owner/kos',
+                icon: Home,
             },
         ];
     } else {
